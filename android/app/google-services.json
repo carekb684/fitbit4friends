@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "467718110223",
+    "firebase_url": "https://fitbit4friends.firebaseio.com",
+    "project_id": "fitbit4friends",
+    "storage_bucket": "fitbit4friends.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467718110223:android:9aff71eb2f090c6018b77a",
+        "android_client_info": {
+          "package_name": "com.example.fitbit_for_friends"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467718110223-ahi9iltst4h99cqdbq01cbh1fqbtmf48.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBMg175KK9ETSdCz0UyXa9kxupO-AYJEs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "467718110223-ahi9iltst4h99cqdbq01cbh1fqbtmf48.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
