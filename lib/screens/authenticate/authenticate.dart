@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fire;
 import 'package:fitbit_for_friends/screens/home/home.dart';
 import 'file:///C:/Users/calle/AndroidStudioProjects/fitbit_for_friends/lib/services/firebase/authService.dart';
 import 'package:fitbit_for_friends/services/firebase/firestore.dart';
@@ -28,7 +28,7 @@ class _AuthenticateState extends State<Authenticate> {
       onPressed: () async {
         widget.sPrefs = await SharedPreferences.getInstance();
         bool clearCache = widget.sPrefs.getString("email") == null ? true : false;
-        FirebaseUser user = await widget._auth.loginWithFacebook(context, clearCache);
+        fire.User user = await widget._auth.loginWithFacebook(context, clearCache);
         if (user != null) {
           var user2 = widget._storeService.fireUserConvert(user);
           widget._storeService.addUser(user2);

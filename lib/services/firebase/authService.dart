@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fire;
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  fire.FirebaseAuth firebaseAuth = fire.FirebaseAuth.instance;
 
   String your_client_id = "792631628209819";
   String your_redirect_url =
@@ -13,7 +13,7 @@ class AuthService {
   SharedPreferences sPrefs;
 
 
-  Future<FirebaseUser> loginWithFacebook(BuildContext context, bool clearCache) async {
+  Future<fire.User> loginWithFacebook(BuildContext context, bool clearCache) async {
 
     String result = await Navigator.push(
       context,
@@ -29,7 +29,7 @@ class AuthService {
     if (result != null) {
       try {
         final facebookAuthCred =
-            FacebookAuthProvider.getCredential(accessToken: result);
+            fire.FacebookAuthProvider.credential(result);
         final user = await firebaseAuth.signInWithCredential(facebookAuthCred);
         sPrefs = await SharedPreferences.getInstance();
         sPrefs.setString('email', user.user.email);
@@ -43,10 +43,11 @@ class AuthService {
 
   }
 
-  Future<FirebaseUser> currentUser() async {
-    FirebaseUser currentUser = await firebaseAuth.currentUser();
+  fire.User currentUser() {
+    fire.User currentUser = firebaseAuth.currentUser;
     return currentUser;
   }
+
   void signOut() async{
     await firebaseAuth.signOut();
     // TODO : fix always instantiating this...

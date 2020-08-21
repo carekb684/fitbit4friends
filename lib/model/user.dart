@@ -4,4 +4,5 @@ class User {
   String name;
   String uid;
   String photoUrl;
+  int distanceKm;
 }

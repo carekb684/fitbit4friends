@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fitbit_for_friends/screens/authenticationWrapper.dart';
-import 'package:fitbit_for_friends/screens/profile/profile.dart';
-import 'file:///C:/Users/calle/AndroidStudioProjects/fitbit_for_friends/lib/services/firebase/authService.dart';
+import 'package:fitbit_for_friends/model/user.dart';
+import 'package:fitbit_for_friends/screens/profile/myprofile.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fire;
+
+
+import 'file:///C:/Users/calle/AndroidStudioProjects/fitbit_for_friends/lib/services/firebase/authService.dart';
 
 import 'friends/friends.dart';
 import 'home/home.dart';
@@ -18,19 +21,15 @@ class MainDrawer extends StatefulWidget {
 
 class _MainDrawerState extends State<MainDrawer> {
   final _auth = AuthService();
-
-  String photoUrl = "";
-  String userName = "";
+  User user = User(name: "", photoUrl: "");
 
   @override
   void initState() {
     super.initState();
-    _auth.currentUser().then((user) {
+    fire.User fireUser = _auth.currentUser();
       setState(() {
-        photoUrl = user.photoUrl;
-        userName = user.displayName;
+        this.user = User(name: fireUser.displayName, photoUrl: fireUser.photoURL, uid: fireUser.uid);
       });
-    });
   }
 
   @override
@@ -52,7 +51,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       height: 100,
                       child: ClipOval(
                         child: CachedNetworkImage(
-                          imageUrl: photoUrl + "?height=500",
+                          imageUrl: user.photoUrl + "?height=500",
                           placeholder: (context, url) => CircularProgressIndicator(),
                           errorWidget: (context, url, error) => Icon(Icons.error),
                           fit: BoxFit.fill,
@@ -60,7 +59,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                       ),
                     ),
-                  Text(userName, style: TextStyle(fontSize:22, color:Colors.white))
+                  Text(user.name, style: TextStyle(fontSize:22, color:Colors.white))
                 ],)
             )
           ),
@@ -72,7 +71,7 @@ class _MainDrawerState extends State<MainDrawer> {
           ListTile(
             leading: Icon(Icons.person),
             title: Text("Profile", style: TextStyle(fontSize: 18)),
-              onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Profile()));}
+              onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => MyProfile(user: user)));}
           ),
           ListTile(
             leading: Icon(Icons.accessibility_new),

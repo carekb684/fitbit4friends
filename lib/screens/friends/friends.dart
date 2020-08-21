@@ -54,12 +54,12 @@ class _FindFriendsState extends State<FindFriends> {
     _populateUsers();
   }
 
-  void _populateUsers() {
-    var allUsers = fireServ.getAllUsers();
-    allUsers.then((docs) {
+  void _populateUsers() async{
+    var allUsers =  fireServ.getAllUsers();
+    await allUsers.then((docs) {
       List<User> users = [];
-      for (DocumentSnapshot doc in docs.documents) {
-        var data = doc.data;
+      for (DocumentSnapshot doc in docs.docs) {
+        var data = doc.data();
         if (data["uid"] == fireServ.getCurrentUid()) {
           continue;
         }
@@ -72,12 +72,12 @@ class _FindFriendsState extends State<FindFriends> {
       });
     });
 
-    var allFriends = fireServ.getAllFriends();
-    allFriends.then((docs) {
+    var allFriends =  fireServ.getAllFriends();
+    await allFriends.then((docs) {
       List<String> users = [];
       for (DocumentSnapshot doc in docs.documents) {
-        String uid = doc.data["uid"];
-        if(doc.documentID == fireServ.getCurrentUid()) {
+        String uid = doc.data()["uid"];
+        if(doc.id == fireServ.getCurrentUid()) {
           users.add(uid);
         }
       }
