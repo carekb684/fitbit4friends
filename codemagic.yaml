@@ -14,6 +14,9 @@ workflows:
             flutter: stable
         scripts:
             - |
+                # test build
+                xcodebuild build -project "Runner.xcodeproj" -list
+            - |
                 # build Flutter module
                 flutter packages get
                 flutter build ios --no-codesign
