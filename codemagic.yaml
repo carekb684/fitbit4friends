@@ -6,7 +6,6 @@ workflows:
         name: iOS App with Flutter Module
         environment:
             vars:
-                FLUTTER_MODULE_DIR: "ios/Flutter"
                 HOST_IOS_APP_DIR: "ios"
                 XCODE_PROJECT: "Runner"
                 XCODE_SCHEME: "Runner.xcscheme"
@@ -16,10 +15,8 @@ workflows:
         scripts:
             - |
                 # build Flutter module
-                ls
-                cd $FLUTTER_MODULE_DIR
-                ls
                 flutter packages get
+                cd "ios"
                 flutter build ios-framework --output=$FCI_BUILD_DIR/$HOST_IOS_APP_DIR/Flutter
             - |
                 # build iOS project
