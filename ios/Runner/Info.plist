@@ -4,6 +4,7 @@
 
 <dict>
 <key>NSAppTransportSecurity</key>
+<true/>
 <key>NSAllowsArbitraryLoads</key>
 <true/>
 <key>NSAllowsArbitraryLoadsInWebContent</key>

@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fitbit_for_friends/model/user.dart';
 import 'package:fitbit_for_friends/screens/profile/myprofile.dart';
+import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fire;
 
 
-import 'file:///C:/Users/calle/AndroidStudioProjects/fitbit_for_friends/lib/services/firebase/authService.dart';
 
 import 'friends/friends.dart';
 import 'home/home.dart';
