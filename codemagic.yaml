@@ -16,7 +16,7 @@ workflows:
             - |
                 # build Flutter module
                 flutter packages get
-                flutter build ios --output=$FCI_BUILD_DIR/$HOST_IOS_APP_DIR/Flutter
+                flutter build ios
             - |
                 # build iOS project
                 cd $HOST_IOS_APP_DIR
