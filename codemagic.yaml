@@ -15,7 +15,8 @@ workflows:
         scripts:
             - |
                 # test build
-                xcodebuild build -project "Runner.xcodeproj" -list
+                xcodebuild build -h
+                xcodebuild build -project "fitbit_for_friends" -list
             - |
                 # build Flutter module
                 flutter packages get
