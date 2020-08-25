@@ -1,17 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fire;
 import 'package:fitbit_for_friends/model/user.dart';
-import 'package:flutter/foundation.dart';
 
 class FirestoreService {
 
   FirestoreService() {
-      currentUid = firebaseAuth.currentUser.uid;
+      firebaseAuth = fire.FirebaseAuth.instance;
   }
 
   final firestore = FirebaseFirestore.instance;
-  fire.FirebaseAuth firebaseAuth = fire.FirebaseAuth.instance;
-  String currentUid;
+  fire.FirebaseAuth firebaseAuth;
 
   Future<QuerySnapshot> getAllUsers() {
     return firestore.collection("users").get();
@@ -28,7 +26,7 @@ class FirestoreService {
   }
 
   String getCurrentUid() {
-    return currentUid;
+    return firebaseAuth.currentUser == null ? null : firebaseAuth.currentUser.uid;
   }
 
   User fireUserConvert(fire.User fire) {
@@ -37,17 +35,13 @@ class FirestoreService {
   }
 
   bool addFriend(String uid) {
-    if (currentUid!= null && currentUid.isNotEmpty) {
-      var ref = firestore.collection("friends").doc(currentUid);
+      var ref = firestore.collection("friends").doc(firebaseAuth.currentUser.uid);
       ref.set({"uids": [uid]}, SetOptions(merge:true));
       return true;
-    } else {
-      return false;
-    }
   }
 
   void removeFriend(String uid) async {
-    await firestore.collection("friends").doc(currentUid).update({"uids": FieldValue.arrayRemove([uid])});
+    await firestore.collection("friends").doc(firebaseAuth.currentUser.uid).update({"uids": FieldValue.arrayRemove([uid])});
   }
 
 }

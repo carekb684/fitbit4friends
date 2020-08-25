@@ -15,7 +15,7 @@ class FindFriends extends StatefulWidget {
 class _FindFriendsState extends State<FindFriends> {
 
   List<User> usersList = [];
-  List<String> friendList = [];
+  List<dynamic> friendList = <dynamic>[];
 
   final addSuccessBar = SnackBar(content: Text('Added a new friend!'));
   final addFailBar = SnackBar(content: Text('Failed to add a new friend!'));
@@ -74,15 +74,15 @@ class _FindFriendsState extends State<FindFriends> {
 
     var allFriends =  fireServ.getAllFriends();
     await allFriends.then((docs) {
-      List<String> users = [];
-      for (DocumentSnapshot doc in docs.documents) {
-        String uid = doc.data()["uid"];
+      List<dynamic> users = [];
+      for (DocumentSnapshot doc in docs.docs) {
         if(doc.id == fireServ.getCurrentUid()) {
-          users.add(uid);
+          users = doc.data()["uids"];
+          break;
         }
       }
       setState(() {
-        friendList = users;
+        friendList = users != null ? users : friendList;
       });
     });
   }

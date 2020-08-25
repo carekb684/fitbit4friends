@@ -17,7 +17,7 @@ class Leaderboard extends StatefulWidget {
 
 class _LeaderboardState extends State<Leaderboard> {
 
-  List<String> friendList = [];
+  List<dynamic> friendList = [];
   List<User> usersList = [];
 
   int totalDistance = 0;
@@ -36,11 +36,11 @@ class _LeaderboardState extends State<Leaderboard> {
   void _populateFriends() async {
     var allFriends = fireServ.getAllFriends();
     await allFriends.then((docs) {
-      List<String> friends = [];
-      for (DocumentSnapshot doc in docs.documents) {
-        String uid = doc.data()["uid"];
-        if(doc.documentID == fireServ.getCurrentUid()) {
-          friends.add(uid);
+      List<dynamic> friends = [];
+      for (DocumentSnapshot doc in docs.docs) {
+        if(doc.id == fireServ.getCurrentUid()) {
+          friends = doc.data()["uids"];
+          break;
         }
       }
       setState(() {
@@ -52,7 +52,7 @@ class _LeaderboardState extends State<Leaderboard> {
     var allUsers = fireServ.getAllUsers();
     await allUsers.then((docs) {
       List<User> users = [];
-      for (DocumentSnapshot doc in docs.documents) {
+      for (DocumentSnapshot doc in docs.docs) {
         var data = doc.data();
         if (friendList.contains(data["uid"])) {
           User user = User(
