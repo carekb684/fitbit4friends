@@ -26,13 +26,13 @@ workflows:
                 # build iOS project
                 cd $HOST_IOS_APP_DIR
                 pod install
-                xcodebuild build -project "$XCODE_PROJECT.xcodeproj" -scheme Runner -archivePath /$HOME/Library/Developer/Xcode/DerivedData/Output/YourApp.xcarchive archive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
-                xcodebuild -exportArchive -archivePath /$HOME/Library/Developer/Xcode/DerivedData/Output/YourApp.xcarchive -exportPath /$HOME/Library/Developer/Xcode/DerivedData/Output -exportOptionsPlist Runner/ExportOptions.plist
+                xcodebuild build -project "$XCODE_PROJECT.xcodeproj" -scheme Runner -archivePath /$HOME/Library/Developer/Xcode/DerivedData/YourApp.xcarchive archive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+                xcodebuild -exportArchive -archivePath /$HOME/Library/Developer/Xcode/DerivedData/YourApp.xcarchive -exportPath /$HOME/Library/Developer/Xcode/DerivedData -exportOptionsPlist Runner/ExportOptions.plist
         artifacts:
             - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
             - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
             - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.ipa
-            - $HOME/Library/Developer/Xcode/DerivedData/Output/*.ipa
+            - $HOME/Library/Developer/Xcode/DerivedData/*.ipa
 
         publishing:
             email:
