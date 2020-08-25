@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>467718110223-sd2d7nmjno1lp9uhj6nsvgrkemb020fu.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.467718110223-sd2d7nmjno1lp9uhj6nsvgrkemb020fu</string>
+	<key>API_KEY</key>
+	<string>AIzaSyADxdf2948QvyGl4DVGVCFo_0x3SAQylLg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>467718110223</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>io.flutter.flutter.app</string>
+	<key>PROJECT_ID</key>
+	<string>fitbit4friends</string>
+	<key>STORAGE_BUCKET</key>
+	<string>fitbit4friends.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:467718110223:ios:85faee6ea5de00d218b77a</string>
+	<key>DATABASE_URL</key>
+	<string>https://fitbit4friends.firebaseio.com</string>
+</dict>
+</plist>
