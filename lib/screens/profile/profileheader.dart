@@ -3,9 +3,10 @@ import 'package:fitbit_for_friends/model/user.dart';
 import 'package:flutter/material.dart';
 
 class ProfileHeader extends StatelessWidget {
-  ProfileHeader({@required this.user});
+  ProfileHeader({@required this.name, this.photoUrl});
 
-  User user;
+  String name;
+  String photoUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class ProfileHeader extends StatelessWidget {
                     height: 150,
                     child: ClipOval(
                       child: CachedNetworkImage(
-                        imageUrl: user.photoUrl + "?height=500",
+                        imageUrl: photoUrl + "?height=500",
                         placeholder: (context, url) => CircularProgressIndicator(),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                         fit: BoxFit.fill,
@@ -32,7 +33,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 30),
-                  child: Text(user.name, style: TextStyle(fontSize:22, color:Colors.white)),
+                  child: Text(name, style: TextStyle(fontSize:22, color:Colors.white)),
                 )
               ],)
         )

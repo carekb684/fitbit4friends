@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@immutable
+class LoggedUser {
+  const LoggedUser({@required this.uid, this.photoUrl, this.fullName});
+  final String uid;
+  final String photoUrl;
+  final String fullName;
+}
+
 class AuthService {
   fire.FirebaseAuth firebaseAuth = fire.FirebaseAuth.instance;
 
@@ -10,11 +18,8 @@ class AuthService {
   String your_redirect_url =
       "https://www.facebook.com/connect/login_success.html";
 
-  SharedPreferences sPrefs;
 
-
-  Future<fire.User> loginWithFacebook(BuildContext context, bool clearCache) async {
-
+  Future<LoggedUser> loginWithFacebook(BuildContext context, {bool clearCache}) async {
     String result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -31,10 +36,8 @@ class AuthService {
         final facebookAuthCred =
             fire.FacebookAuthProvider.credential(result);
         final user = await firebaseAuth.signInWithCredential(facebookAuthCred);
-        sPrefs = await SharedPreferences.getInstance();
-        sPrefs.setString('email', user.user.email);
 
-        return user.user;
+        return _userFromFirebase(user.user);
       } catch (e) {
         return null;
       }
@@ -43,16 +46,16 @@ class AuthService {
 
   }
 
-  fire.User currentUser() {
-    fire.User currentUser = firebaseAuth.currentUser;
-    return currentUser;
+  LoggedUser _userFromFirebase(fire.User user) {
+    return user == null ? null : LoggedUser(uid: user.uid, photoUrl: user.photoURL, fullName: user.displayName);
+  }
+
+  Stream<LoggedUser> get onAuthStateChanged {
+    return firebaseAuth.authStateChanges().map(_userFromFirebase);
   }
 
   void signOut() async{
     await firebaseAuth.signOut();
-    // TODO : fix always instantiating this...
-    sPrefs = await SharedPreferences.getInstance();
-    sPrefs.remove('email');
   }
 
 }

@@ -1,10 +1,10 @@
-import 'package:fitbit_for_friends/model/user.dart';
 import 'package:fitbit_for_friends/screens/profile/profileheader.dart';
+import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:flutter/material.dart';
 
 
 class UserProfile extends StatefulWidget {
-  final User user;
+  final LoggedUser user;
 
 
   UserProfile({this.user});
@@ -30,7 +30,7 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          ProfileHeader(user: widget.user,),
+          ProfileHeader(name: widget.user.fullName, photoUrl: widget.user.photoUrl),
           Column(
             children: <Widget>[
               SizedBox(height: 60,),

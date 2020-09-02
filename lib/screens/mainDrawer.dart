@@ -4,6 +4,7 @@ import 'package:fitbit_for_friends/screens/profile/myprofile.dart';
 import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fire;
+import 'package:provider/provider.dart';
 
 
 
@@ -12,28 +13,24 @@ import 'home/home.dart';
 import 'leaderboard/leaderboard.dart';
 
 class MainDrawer extends StatefulWidget {
-  MainDrawer({this.onSignedOut});
-  final VoidCallback onSignedOut;
 
   @override
   _MainDrawerState createState() => _MainDrawerState();
 }
 
 class _MainDrawerState extends State<MainDrawer> {
-  final _auth = AuthService();
-  User user = User(name: "", photoUrl: "");
+
+  LoggedUser user;
 
   @override
   void initState() {
     super.initState();
-    fire.User fireUser = _auth.currentUser();
-      setState(() {
-        this.user = User(name: fireUser.displayName, photoUrl: fireUser.photoURL, uid: fireUser.uid);
-      });
   }
 
   @override
   Widget build(BuildContext context) {
+    LoggedUser user = Provider.of<LoggedUser>(context, listen: false);
+
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -59,7 +56,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                       ),
                     ),
-                  Text(user.name, style: TextStyle(fontSize:22, color:Colors.white))
+                  Text(user.fullName, style: TextStyle(fontSize:22, color:Colors.white))
                 ],)
             )
           ),
@@ -76,7 +73,7 @@ class _MainDrawerState extends State<MainDrawer> {
           ListTile(
             leading: Icon(Icons.accessibility_new),
             title: Text("Leaderboard", style: TextStyle(fontSize: 18)),
-              onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Leaderboard()));}
+              onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Leaderboard.create(context)));}
           ),
           ListTile(
             leading: Icon(Icons.people),
@@ -87,11 +84,12 @@ class _MainDrawerState extends State<MainDrawer> {
             leading: Icon(Icons.exit_to_app),
             title: Text("Sign out", style: TextStyle(fontSize: 18)),
               onTap: () {
-              _auth.signOut();
-              Navigator.pushReplacementNamed(context, "/auth");
+              AuthService auth = Provider.of<AuthService>(context, listen:false);
+              auth.signOut();
             }
           ),
         ],)
     );
   }
+
 }

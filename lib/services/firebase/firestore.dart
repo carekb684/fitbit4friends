@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as fire;
-import 'package:fitbit_for_friends/model/user.dart';
+import 'package:fitbit_for_friends/model/is_friend_id_map.dart';
+import 'package:fitbit_for_friends/model/profile_model.dart';
+import 'package:flutter/foundation.dart';
+
+import 'authService.dart';
 
 class FirestoreService {
 
-  FirestoreService() {
-      firebaseAuth = fire.FirebaseAuth.instance;
-  }
+  FirestoreService({@required this.loggedUid});
 
+  final String loggedUid;
   final firestore = FirebaseFirestore.instance;
-  fire.FirebaseAuth firebaseAuth;
 
   Future<QuerySnapshot> getAllUsers() {
     return firestore.collection("users").get();
@@ -19,29 +20,48 @@ class FirestoreService {
     return firestore.collection("friends").get();
   }
 
-
-  void addUser(User user) {
-    Map obj = <String, dynamic>{"name": user.name, "uid": user.uid, "photoUrl": user.photoUrl};
-    firestore.collection("users").doc(user.uid).set(obj);
+  Stream<List<IsFriendId>> friendsStream() {
+    return firestore.collection("users").doc(loggedUid).collection("userfriends").doc(loggedUid).snapshots().map(_friendListFromSnapshot);
   }
 
-  String getCurrentUid() {
-    return firebaseAuth.currentUser == null ? null : firebaseAuth.currentUser.uid;
+  Stream<List<LoggedUser>> userStream() {
+    return firestore.collection("users").snapshots().map(_loggedUserFromSnapshot);
   }
 
-  User fireUserConvert(fire.User fire) {
-    var user = User(name: fire.displayName, uid: fire.uid, photoUrl: fire.photoUrl);
-    return user;
+  List<LoggedUser> _loggedUserFromSnapshot(QuerySnapshot snap) {
+    return snap.docs.map((doc){
+      var data = doc.data();
+      return LoggedUser(uid: data["uid"], photoUrl: data["photoUrl"], fullName: data["name"]);
+    }).toList();
   }
 
-  bool addFriend(String uid) {
-      var ref = firestore.collection("friends").doc(firebaseAuth.currentUser.uid);
+  List<IsFriendId> _friendListFromSnapshot(DocumentSnapshot snap) {
+    var data = snap.data();
+    List<IsFriendId> isFriends = [];
+    List<dynamic> uids = data == null ? [] : data["uids"];
+    for (dynamic uid in uids) {
+      isFriends.add(IsFriendId(uid: uid, isFriend: true));
+    }
+    return isFriends;
+  }
+
+  void addFriend(String uid) {
+      var ref = firestore.collection("users").doc(loggedUid).collection("userfriends").doc(loggedUid);
       ref.set({"uids": [uid]}, SetOptions(merge:true));
-      return true;
   }
 
   void removeFriend(String uid) async {
-    await firestore.collection("friends").doc(firebaseAuth.currentUser.uid).update({"uids": FieldValue.arrayRemove([uid])});
+    await firestore.collection("users").doc(loggedUid).collection("userfriends").doc(loggedUid).
+      update({"uids": FieldValue.arrayRemove([uid])});
+  }
+
+  void setProfileInfo(ProfileModel profile) {
+    var ref = firestore.collection("users").doc(loggedUid).collection("profile").doc(loggedUid);
+    ref.set({"win": profile.winText, "lose": profile.loseText, "str": profile.strText}, SetOptions(merge:true));
+  }
+
+  Future<DocumentSnapshot> getProfileData() {
+    return firestore.collection("users").doc(loggedUid).collection("profile").doc(loggedUid).get();
   }
 
 }

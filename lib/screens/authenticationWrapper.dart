@@ -1,24 +1,22 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitbit_for_friends/screens/authenticate/authenticate.dart';
 import 'package:fitbit_for_friends/screens/home/home.dart';
-import 'file:///C:/Users/calle/AndroidStudioProjects/fitbit_for_friends/lib/services/firebase/authService.dart';
+import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:flutter/material.dart';
 
-class AuthenticationWrapper extends StatefulWidget {
+import 'authenticate/authenticate.dart';
 
-  @override
-  _AuthenticationWrapperState createState() => _AuthenticationWrapperState();
-}
-
-class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
-
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({Key key, @required this.userSnapshot}) : super(key: key);
+  final AsyncSnapshot<LoggedUser> userSnapshot;
 
   @override
   Widget build(BuildContext context) {
-    // TODO : return home or authentiation widget
-
-   return Authenticate();
-
-   //return Home(onSignedOut: _SignedOut);
+    if (userSnapshot.connectionState == ConnectionState.active) {
+      return userSnapshot.hasData ? Home() : Authenticate();
+    }
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }
