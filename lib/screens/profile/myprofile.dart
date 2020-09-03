@@ -5,6 +5,7 @@ import 'package:fitbit_for_friends/screens/profile/profileheader.dart';
 import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:fitbit_for_friends/services/firebase/firestore.dart';
 import 'package:fitbit_for_friends/services/fitbit/oauth_fitbit.dart';
+import 'package:fitbit_for_friends/services/fitbit/oauth_helper_fitbit.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:oauth2_client/oauth2_helper.dart';
@@ -25,15 +26,11 @@ class _MyProfileState extends State<MyProfile> {
 
   _MyProfileState() {
     oauth = OAuthFitbit(customUriScheme: "fitbitforfriends", redirectUri: "fitbitforfriends://redirecturi");
-    oauthHelper = OAuth2Helper(oauth,
-      grantType: OAuth2Helper.AUTHORIZATION_CODE,
-      clientId: '22BRLL',
-      clientSecret: '57aaac198da466f163535055ec4e6472',
-      scopes: ['activity', 'profile', 'social']);
+    oauthHelper = OauthFitbitHelper(oauth);
   }
 
   OAuthFitbit oauth;
-  OAuth2Helper oauthHelper;
+  OauthFitbitHelper oauthHelper;
 
   TextEditingController authController =
       new TextEditingController(text: "initial value");
@@ -265,7 +262,12 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   Oauth() {
+    /*
+    // TODO: change url here to get profile maybe?
     Future<Response> resp = oauthHelper.get("https://www.fitbit.com/oauth2/authorize");
-    resp.then((value) => print("test"));
+    resp.then((value) {
+      print("test");
+    });
+    */
   }
 }

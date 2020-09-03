@@ -12,6 +12,12 @@ class FirestoreService {
   final String loggedUid;
   final firestore = FirebaseFirestore.instance;
 
+  void addUser(LoggedUser user, String fitbitUid) {
+    //TODO: if not already added?
+    Map obj = <String, dynamic>{"name": user.fullName, "uid": user.uid, "photoUrl": user.photoUrl, "fitbitId": fitbitUid};
+    firestore.collection("users").doc(user.uid).set(obj);
+  }
+
   Future<QuerySnapshot> getAllUsers() {
     return firestore.collection("users").get();
   }
@@ -31,7 +37,7 @@ class FirestoreService {
   List<LoggedUser> _loggedUserFromSnapshot(QuerySnapshot snap) {
     return snap.docs.map((doc){
       var data = doc.data();
-      return LoggedUser(uid: data["uid"], photoUrl: data["photoUrl"], fullName: data["name"]);
+      return LoggedUser(uid: data["uid"], photoUrl: data["photoUrl"], fullName: data["name"], fitbitId: data["fitbitId"]);
     }).toList();
   }
 

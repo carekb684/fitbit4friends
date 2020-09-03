@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fitbit_for_friends/model/fitbitPackage.dart';
 import 'package:fitbit_for_friends/model/is_friend.dart';
@@ -8,6 +10,7 @@ import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:fitbit_for_friends/services/firebase/firestore.dart';
 import 'package:fitbit_for_friends/services/fitbit/fitbitService.dart';
 import 'package:flutter/material.dart';
+import 'package:oauth2_client/oauth2_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../mainDrawer.dart';
@@ -32,10 +35,10 @@ class _LeaderboardState extends State<Leaderboard> {
   List<IsFriend> userList = [];
   List<UserWithData> userDataList = [];
   int totalDistance = 0;
-  Map<String, FitBitPackage> userData = Map();
+  Map<String, int> userData = Map();
 
   FirestoreService fireServ;
-  final FitbitService fitbitServ = FitbitService();
+  FitbitService fitServ;
 
   Stream<List<IsFriend>> _friendStream;
 
@@ -44,14 +47,13 @@ class _LeaderboardState extends State<Leaderboard> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     IsFriendViewModel viewModel = Provider.of<IsFriendViewModel>(context);
+    fitServ = Provider.of<FitbitService>(context);
     _friendStream = viewModel.isFriendStream();
   }
 
@@ -98,6 +100,22 @@ class _LeaderboardState extends State<Leaderboard> {
 
   void getFitBitData() async {
     for (IsFriend friend  in userList) {
+      if (friend.user.fitbitId == null || friend.user.fitbitId.isEmpty) {
+        continue;
+      }
+      fitServ.getAllDistances(friend.user.fitbitId).then((value) {
+        Map<String, dynamic> distancesMap = jsonDecode(value.body);
+        //int distance = distancesMap["distance"];
+        int distance = 5;
+        setDistanceOnUser(distance, friend.user.uid);
+        totalDistance += distance;
+        setState(() {
+          sortUsers(userDataList);
+          userData[friend.user.uid] = distance;
+        });
+      });
+
+      /*
       await fitbitServ.getData(friend.user.uid).then((fitData) {
         setState(() {
           setDistanceOnUser(fitData.distanceKm, friend.user.uid);
@@ -106,20 +124,21 @@ class _LeaderboardState extends State<Leaderboard> {
           userData[friend.user.uid] = fitData;
         });
       });
+    */
+
     }
   }
 
   /** returns the distance or a progress indicator
    *
    */
-  Widget getDistanceWidget(Map<String, FitBitPackage> userData, String uid) {
-    var data = userData[uid];
-    if (data == null) {
+  Widget getDistanceWidget(int distance) {
+    if (distance == null) {
       return CircularProgressIndicator();
     }
 
     return Text(
-      "${userData[uid].distanceKm} km",
+      "${distance} km",
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500));
   }
 
@@ -146,14 +165,14 @@ class _LeaderboardState extends State<Leaderboard> {
     }
   }
 
-  double getDistancePercentage(FitBitPackage data) {
-    if(data == null || data.distanceKm == null) {
+  double getDistancePercentage(int distance) {
+    if(distance == null || distance == null) {
       return 0.0;
     }
     if (totalDistance == 0) {
       return 1.0;
     }
-    double perc = data.distanceKm / totalDistance;
+    double perc = distance / totalDistance;
     return perc;
   }
 
@@ -188,7 +207,7 @@ class _LeaderboardState extends State<Leaderboard> {
                   ),
                 ),
               ),
-              trailing: getDistanceWidget(userData, user.uid),
+              trailing: getDistanceWidget(userData[user.uid]),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfile(user: user)));
               },

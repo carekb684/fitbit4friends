@@ -3,6 +3,7 @@ import 'package:fitbit_for_friends/screens/home/home.dart';
 import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:fitbit_for_friends/services/firebase/firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Authenticate extends StatefulWidget {
@@ -24,17 +25,6 @@ class _AuthenticateState extends State<Authenticate> {
             onPressed: () async {
               LoggedUser user =
                 await widget._auth.loginWithFacebook(context, clearCache: true);
-              if (user != null) {
-                //TODO:
-                //after loggging, adding user to firestore... NEEDED?
-                /*
-                var user2 = widget._storeService.fireUserConvert(user);
-                widget._storeService.addUser(user2);
-                */
-                // TODO: prob not needed?
-                //Navigator.pushReplacement(context,
-                  //MaterialPageRoute(builder: (BuildContext context) => Home()));
-          }
         },
       )),
       appBar: AppBar(title: Text("Sign in")),

@@ -5,10 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @immutable
 class LoggedUser {
-  const LoggedUser({@required this.uid, this.photoUrl, this.fullName});
+  LoggedUser({@required this.uid, this.photoUrl, this.fullName, this.fitbitId});
   final String uid;
   final String photoUrl;
   final String fullName;
+  String fitbitId;
 }
 
 class AuthService {
