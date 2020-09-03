@@ -1,7 +1,6 @@
 import 'dart:convert';
+
 import 'package:oauth2_client/access_token_response.dart';
-import 'package:oauth2_client/src/secure_storage.dart';
-import 'package:oauth2_client/src/storage.dart';
 import 'package:oauth2_client/src/token_storage.dart';
 
 

@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitbit_for_friends/model/profile_model.dart';
-import 'package:fitbit_for_friends/model/user.dart';
 import 'package:fitbit_for_friends/screens/profile/profileheader.dart';
 import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:fitbit_for_friends/services/firebase/firestore.dart';
 import 'package:fitbit_for_friends/services/fitbit/oauth_fitbit.dart';
 import 'package:fitbit_for_friends/services/fitbit/oauth_helper_fitbit.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:oauth2_client/oauth2_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../mainDrawer.dart';
@@ -83,17 +80,6 @@ class _MyProfileState extends State<MyProfile> {
                 name: widget.user.fullName, photoUrl: widget.user.photoUrl),
             Column(
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(top: 30),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        RaisedButton(
-                            child: Text("Register fitbit"),
-                          onPressed: () => Oauth(),
-                        ),
-                      ]),
-                ),
                 Form(
                   key: _formKey,
                   child: Column(
@@ -259,15 +245,5 @@ class _MyProfileState extends State<MyProfile> {
     var data = event.data();
     var profile = data == null ? ProfileModel() : ProfileModel(loseText: data["lose"], winText: data["win"], strText: data["str"]);
     return profile;
-  }
-
-  Oauth() {
-    /*
-    // TODO: change url here to get profile maybe?
-    Future<Response> resp = oauthHelper.get("https://www.fitbit.com/oauth2/authorize");
-    resp.then((value) {
-      print("test");
-    });
-    */
   }
 }

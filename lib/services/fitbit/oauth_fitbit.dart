@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import 'package:http/http.dart';
 import 'package:oauth2_client/access_token_response.dart';
 import 'package:oauth2_client/authorization_response.dart';
 import 'package:oauth2_client/oauth2_client.dart';
-import 'dart:convert';
 import 'package:oauth2_client/src/oauth2_utils.dart';
 import 'package:random_string/random_string.dart';
 

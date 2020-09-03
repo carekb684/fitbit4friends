@@ -1,9 +1,5 @@
-import 'package:fitbit_for_friends/services/fitbit/fitbit_token_storage.dart';
 import 'package:oauth2_client/oauth2_client.dart';
 import 'package:oauth2_client/oauth2_helper.dart';
-import 'package:oauth2_client/src/token_storage.dart';
-import 'package:oauth2_client/src/secure_storage.dart';
-
 
 import 'fit_token_resp.dart';
 

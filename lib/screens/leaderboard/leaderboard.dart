@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fitbit_for_friends/model/fitbitPackage.dart';
 import 'package:fitbit_for_friends/model/is_friend.dart';
 import 'package:fitbit_for_friends/model/is_friend_view_model.dart';
 import 'package:fitbit_for_friends/model/user.dart';
@@ -10,7 +9,6 @@ import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:fitbit_for_friends/services/firebase/firestore.dart';
 import 'package:fitbit_for_friends/services/fitbit/fitbitService.dart';
 import 'package:flutter/material.dart';
-import 'package:oauth2_client/oauth2_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../mainDrawer.dart';
@@ -34,7 +32,7 @@ class _LeaderboardState extends State<Leaderboard> {
 
   List<IsFriend> userList = [];
   List<UserWithData> userDataList = [];
-  int totalDistance = 0;
+  int longestDistance = 0;
   Map<String, int> userData = Map();
 
   FirestoreService fireServ;
@@ -75,7 +73,7 @@ class _LeaderboardState extends State<Leaderboard> {
               );
             } else {
               if (init) {
-                totalDistance = 0;
+                longestDistance = 0;
                 userList = friends; //TODO: temp
                 userDataList = userList.map((e) => UserWithData.fromFriend(e)).toList();
                 getFitBitData();
@@ -108,7 +106,7 @@ class _LeaderboardState extends State<Leaderboard> {
         //int distance = distancesMap["distance"];
         int distance = 5;
         setDistanceOnUser(distance, friend.user.uid);
-        totalDistance += distance;
+        saveLongestDistance(distance);
         setState(() {
           sortUsers(userDataList);
           userData[friend.user.uid] = distance;
@@ -166,13 +164,13 @@ class _LeaderboardState extends State<Leaderboard> {
   }
 
   double getDistancePercentage(int distance) {
-    if(distance == null || distance == null) {
+    if(distance == null) {
       return 0.0;
     }
-    if (totalDistance == 0) {
+    if (longestDistance == 0) {
       return 1.0;
     }
-    double perc = distance / totalDistance;
+    double perc = distance / longestDistance;
     return perc;
   }
 
@@ -225,6 +223,12 @@ class _LeaderboardState extends State<Leaderboard> {
       return fireServ;
     } else {
       return fireServ;
+    }
+  }
+
+  void saveLongestDistance(int distance) {
+    if (distance > longestDistance) {
+      longestDistance = distance;
     }
   }
 }

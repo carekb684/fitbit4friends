@@ -2,8 +2,6 @@
 import 'package:fitbit_for_friends/model/fitbitPackage.dart';
 import 'package:fitbit_for_friends/services/fitbit/oauth_helper_fitbit.dart';
 import 'package:http/http.dart';
-import 'dart:convert';
-import 'package:oauth2_client/oauth2_helper.dart';
 
 class FitbitService {
 

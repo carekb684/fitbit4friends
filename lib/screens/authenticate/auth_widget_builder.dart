@@ -5,8 +5,6 @@ import 'package:fitbit_for_friends/services/fitbit/fitbitService.dart';
 import 'package:fitbit_for_friends/services/fitbit/oauth_fitbit.dart';
 import 'package:fitbit_for_friends/services/fitbit/oauth_helper_fitbit.dart';
 import 'package:flutter/material.dart';
-import 'package:oauth2_client/access_token_response.dart';
-import 'package:oauth2_client/oauth2_helper.dart';
 import 'package:provider/provider.dart';
 
 /// Used to create user-dependant objects that need to be accessible by all widgets.
