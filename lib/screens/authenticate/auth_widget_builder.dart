@@ -61,7 +61,7 @@ class _AuthWidgetBuilderState extends State<AuthWidgetBuilder> {
 
   oauthServiceInit(LoggedUser user) {
     OAuthFitbit oauth = OAuthFitbit(customUriScheme: "fitbitforfriends", redirectUri: "fitbitforfriends://redirecturi");
-    OauthFitbitHelper oauthHelper = OauthFitbitHelper(oauth);
+    OauthFitbitHelper oauthHelper = OauthFitbitHelper(oauth, user.uid);
     Future<FitAccessTokenResponse> future = oauthHelper.getToken();
     future.then((value) {
       setState(() {

@@ -33,7 +33,7 @@ class _LeaderboardState extends State<Leaderboard> {
   List<IsFriend> userList = [];
   List<UserWithData> userDataList = [];
   int longestDistance = 0;
-  Map<String, int> userData = Map();
+  //Map<String, int> userData = Map();
 
   FirestoreService fireServ;
   FitbitService fitServ;
@@ -74,12 +74,14 @@ class _LeaderboardState extends State<Leaderboard> {
             } else {
               if (init) {
                 longestDistance = 0;
-                userList = friends; //TODO: temp
+                userList = friends;
+                LoggedUser loggedUser = Provider.of<LoggedUser>(context, listen: false);
+                userList.removeWhere((element) => element.isFriend == false && element.user.uid != loggedUser.uid);
                 userDataList = userList.map((e) => UserWithData.fromFriend(e)).toList();
                 getFitBitData();
                 init = false;
               }
-              return getListview(userList);
+              return getListview();
             }
           }
           return Scaffold(
@@ -97,19 +99,18 @@ class _LeaderboardState extends State<Leaderboard> {
   }
 
   void getFitBitData() async {
-    for (IsFriend friend  in userList) {
-      if (friend.user.fitbitId == null || friend.user.fitbitId.isEmpty) {
+    for (UserWithData user  in userDataList) {
+      if (user.fitbitId == null || user.fitbitId.isEmpty) {
         continue;
       }
-      fitServ.getAllDistances(friend.user.fitbitId).then((value) {
+      fitServ.getAllDistances(user.fitbitId).then((value) {
         Map<String, dynamic> distancesMap = jsonDecode(value.body);
         //int distance = distancesMap["distance"];
         int distance = 5;
-        setDistanceOnUser(distance, friend.user.uid);
+        user.distanceKm = distance;
         saveLongestDistance(distance);
         setState(() {
           sortUsers(userDataList);
-          userData[friend.user.uid] = distance;
         });
       });
 
@@ -154,15 +155,6 @@ class _LeaderboardState extends State<Leaderboard> {
     return users;
   }
 
-  void setDistanceOnUser(int distanceKm, String uid) {
-    for (UserWithData user in userDataList) {
-      if (uid == user.uid) {
-        user.distanceKm = distanceKm;
-        break;
-      }
-    }
-  }
-
   double getDistancePercentage(int distance) {
     if(distance == null) {
       return 0.0;
@@ -174,9 +166,8 @@ class _LeaderboardState extends State<Leaderboard> {
     return perc;
   }
 
-  Widget getListview(List<IsFriend> friends) {
-    LoggedUser loggedUser = Provider.of<LoggedUser>(context, listen: false);
-    friends.removeWhere((element) => element.isFriend == false && element.user.uid != loggedUser.uid);
+  Widget getListview() {
+
 
 
 
@@ -189,7 +180,7 @@ class _LeaderboardState extends State<Leaderboard> {
           children: <Widget>[
             FractionallySizedBox(
                 child: Container(color:Colors.lightBlueAccent, height: 56,),
-                widthFactor: getDistancePercentage(userData[user.uid])),
+                widthFactor: getDistancePercentage(user.distanceKm)),
             ListTile(
               title: Text(user.fullName),
               leading: Container(
@@ -205,7 +196,7 @@ class _LeaderboardState extends State<Leaderboard> {
                   ),
                 ),
               ),
-              trailing: getDistanceWidget(userData[user.uid]),
+              trailing: getDistanceWidget(user.distanceKm),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfile(user: user)));
               },

@@ -79,6 +79,25 @@ class OAuthFitbit extends OAuth2Client {
         requestedScopes: scopes);
   }
 
+  @override
+  Future<AccessTokenResponse> refreshToken(String refreshToken,
+      {httpClient, String clientId, String clientSecret}) async {
+    httpClient ??= Client();
+
+    final Map body = getRefreshUrlParams(
+        refreshToken: refreshToken,
+        clientId: "",
+        clientSecret: "");
+
+    String credentials = clientId + ":" + clientSecret;
+    String encoded = base64.encode(utf8.encode(credentials));
+
+    Response response =
+    await httpClient.post(tokenUrl, headers: <String, String>{HttpHeaders.authorizationHeader: "Basic " + encoded, HttpHeaders.contentTypeHeader : "application/x-www-form-urlencoded"} ,
+        body: body);
+
+    return AccessTokenResponse.fromHttpResponse(response);
+  }
 
   @override
   Future<AccessTokenResponse> getTokenWithAuthCodeFlow({

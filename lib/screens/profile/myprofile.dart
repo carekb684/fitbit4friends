@@ -4,7 +4,6 @@ import 'package:fitbit_for_friends/screens/profile/profileheader.dart';
 import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:fitbit_for_friends/services/firebase/firestore.dart';
 import 'package:fitbit_for_friends/services/fitbit/oauth_fitbit.dart';
-import 'package:fitbit_for_friends/services/fitbit/oauth_helper_fitbit.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,11 +22,9 @@ class _MyProfileState extends State<MyProfile> {
 
   _MyProfileState() {
     oauth = OAuthFitbit(customUriScheme: "fitbitforfriends", redirectUri: "fitbitforfriends://redirecturi");
-    oauthHelper = OauthFitbitHelper(oauth);
   }
 
   OAuthFitbit oauth;
-  OauthFitbitHelper oauthHelper;
 
   TextEditingController authController =
       new TextEditingController(text: "initial value");
@@ -233,15 +230,15 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   void getProfileData() {
-    getFireService().getProfileData().then((value) {
-      profileModel = _profileModelFromSnapshot(value);
+    getFireService().getProfileData(widget.user.uid).then((value) {
+      profileModel = profileModelFromSnapshot(value);
       travelController.text = profileModel.winText;
       lostController.text = profileModel.loseText;
       strController.text = profileModel.strText;
     });
   }
 
-  ProfileModel _profileModelFromSnapshot(DocumentSnapshot event) {
+  ProfileModel profileModelFromSnapshot(DocumentSnapshot event) {
     var data = event.data();
     var profile = data == null ? ProfileModel() : ProfileModel(loseText: data["lose"], winText: data["win"], strText: data["str"]);
     return profile;

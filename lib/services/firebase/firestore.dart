@@ -66,8 +66,8 @@ class FirestoreService {
     ref.set({"win": profile.winText, "lose": profile.loseText, "str": profile.strText}, SetOptions(merge:true));
   }
 
-  Future<DocumentSnapshot> getProfileData() {
-    return firestore.collection("users").doc(loggedUid).collection("profile").doc(loggedUid).get();
+  Future<DocumentSnapshot> getProfileData(String uid) {
+    return firestore.collection("users").doc(uid).collection("profile").doc(uid).get();
   }
 
 }

@@ -1,11 +1,13 @@
 import 'package:oauth2_client/oauth2_client.dart';
 import 'package:oauth2_client/oauth2_helper.dart';
+import 'package:oauth2_client/src/token_storage.dart';
 
 import 'fit_token_resp.dart';
 
 class OauthFitbitHelper extends OAuth2Helper {
 
-  OauthFitbitHelper(OAuth2Client client) : super(client,
+  OauthFitbitHelper(OAuth2Client client, String uid) : super(client,
+  tokenStorage: TokenStorage(uid),
   grantType: OAuth2Helper.AUTHORIZATION_CODE,
   clientId: '22BRLL',
   clientSecret: '57aaac198da466f163535055ec4e6472',
