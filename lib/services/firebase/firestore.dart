@@ -70,4 +70,12 @@ class FirestoreService {
     return firestore.collection("users").doc(uid).collection("profile").doc(uid).get();
   }
 
+  void setSwimDate(String date, String distance) {
+    var ref = firestore.collection("swimlog").doc(loggedUid);
+    ref.set({date: distance}, SetOptions(merge:true));
+  }
+
+  Future<DocumentSnapshot> getSwimDates() {
+    return firestore.collection("swimlog").doc(loggedUid).get();
+  }
 }

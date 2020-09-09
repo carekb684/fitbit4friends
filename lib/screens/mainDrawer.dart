@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'friends/friends.dart';
 import 'home/home.dart';
 import 'leaderboard/leaderboard.dart';
+import 'log/manual_log.dart';
 
 class MainDrawer extends StatefulWidget {
 
@@ -60,6 +61,11 @@ class _MainDrawerState extends State<MainDrawer> {
               leading: Icon(Icons.home),
               title: Text("Home", style: TextStyle(fontSize: 18)),
               onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Home()));}
+          ),
+          ListTile(
+              leading: Icon(Icons.event),
+              title: Text("Manual log", style: TextStyle(fontSize: 18)),
+              onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Log()));}
           ),
           ListTile(
             leading: Icon(Icons.person),
