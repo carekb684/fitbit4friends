@@ -75,7 +75,12 @@ class FirestoreService {
     ref.set({date: distance}, SetOptions(merge:true));
   }
 
-  Future<DocumentSnapshot> getSwimDates() {
-    return firestore.collection("swimlog").doc(loggedUid).get();
+  void setSwimDates(Map<String, dynamic> distancesMap) {
+    var ref = firestore.collection("swimlog").doc(loggedUid);
+    ref.set(distancesMap, SetOptions(merge:true));
+  }
+
+  Future<DocumentSnapshot> getSwimDates(String uid) {
+    return firestore.collection("swimlog").doc(uid).get();
   }
 }

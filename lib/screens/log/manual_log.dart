@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
+import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:fitbit_for_friends/services/firebase/firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _LogState extends State<Log> {
 
   FirestoreService fireServ;
   Future<DocumentSnapshot> swims;
+  LoggedUser loggedUser;
 
   DateTime dateTime = DateTime.now();
 
@@ -28,7 +30,8 @@ class _LogState extends State<Log> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     fireServ = Provider.of<FirestoreService>(context);
-    swims = fireServ.getSwimDates();
+    loggedUser = Provider.of<LoggedUser>(context);
+    swims = fireServ.getSwimDates(loggedUser.uid);
   }
 
   @override
@@ -116,7 +119,7 @@ class _LogState extends State<Log> {
                     swimInputController.clear();
                     fireServ.setSwimDate(format(dateTime), inputSwim);
                     setState(() {
-                      swims = fireServ.getSwimDates();
+                      swims = fireServ.getSwimDates(loggedUser.uid);
                     });
                   },
                   shape: new RoundedRectangleBorder(
@@ -134,7 +137,7 @@ class _LogState extends State<Log> {
                 if (data == null || !data.containsKey(format(dateTime))) {
                   return getSnail();
                 } else {
-                  return Center(child: Text(data[format(dateTime)] + " units swam", style: TextStyle(fontSize: 25),));
+                  return Center(child: Text(data[format(dateTime)] + " laps swam", style: TextStyle(fontSize: 25),));
                 }
               } else {
                 return CircularProgressIndicator();

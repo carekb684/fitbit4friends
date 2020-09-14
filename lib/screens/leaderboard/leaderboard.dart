@@ -8,6 +8,7 @@ import 'package:fitbit_for_friends/screens/profile/userprofile.dart';
 import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:fitbit_for_friends/services/firebase/firestore.dart';
 import 'package:fitbit_for_friends/services/fitbit/fitbitService.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +42,7 @@ class _LeaderboardState extends State<Leaderboard> {
   Stream<List<IsFriend>> _friendStream;
 
   bool init = true;
+  LoggedUser loggedUser;
 
   @override
   void initState() {
@@ -75,7 +77,7 @@ class _LeaderboardState extends State<Leaderboard> {
               if (init) {
                 longestDistance = 0;
                 userList = friends;
-                LoggedUser loggedUser = Provider.of<LoggedUser>(context, listen: false);
+                loggedUser = Provider.of<LoggedUser>(context, listen: false);
                 userList.removeWhere((element) => element.isFriend == false && element.user.uid != loggedUser.uid);
                 userDataList = userList.map((e) => UserWithData.fromFriend(e)).toList();
                 getFitBitData();
@@ -100,19 +102,36 @@ class _LeaderboardState extends State<Leaderboard> {
 
   void getFitBitData() async {
     for (UserWithData user  in userDataList) {
-      if (user.fitbitId == null || user.fitbitId.isEmpty) {
-        continue;
-      }
-      fitServ.getAllDistances(user.fitbitId).then((value) {
-        Map<String, dynamic> distancesMap = jsonDecode(value.body);
-        //int distance = distancesMap["distance"];
-        int distance = 5;
-        user.distanceKm = distance;
-        saveLongestDistance(distance);
-        setState(() {
-          sortUsers(userDataList);
+
+      if (user.uid == loggedUser.uid) {
+
+        fitServ.getAllDistances(user.fitbitId).then((value) {
+          Map<String, dynamic> distancesJson = jsonDecode(value.body);
+          Map<String, dynamic> distancesMap = getSwimDatesFitBitLog(distancesJson);
+
+          saveDistancesInFirestore(distancesMap);
+
+          user.distanceKm = countSwimDates(distancesMap);
+          saveLongestDistance(user.distanceKm);
+          setState(() {
+            sortUsers(userDataList);
+          });
         });
-      });
+
+      } else {
+        getFireService().getSwimDates(user.uid).then((value) {
+          var data = value.data();
+          if( data != null) {
+            user.distanceKm = countSwimDates(data);
+            saveLongestDistance(user.distanceKm);
+            setState(() {
+              sortUsers(userDataList);
+            });
+          }
+        });
+      }
+
+
 
       /*
       await fitbitServ.getData(friend.user.uid).then((fitData) {
@@ -137,7 +156,7 @@ class _LeaderboardState extends State<Leaderboard> {
     }
 
     return Text(
-      "${distance} km",
+      "${distance} laps",
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500));
   }
 
@@ -221,6 +240,56 @@ class _LeaderboardState extends State<Leaderboard> {
     if (distance > longestDistance) {
       longestDistance = distance;
     }
+  }
+
+  int countSwimDates(Map<String, dynamic> data) {
+    int totalLengths = 0;
+    if (data.isEmpty) {
+      return totalLengths;
+    }
+    // TODO: change to 10 OCTOBER
+    String base_key = "2020-09-";
+
+    for (int i in List.generate(31, (index) => index + 1)) {
+
+      String key = i < 10 ? "0$i" : "$i";
+
+      if (data.containsKey(base_key + key)) {
+        totalLengths += int.parse(data[base_key + key]);
+      }
+    }
+
+    return totalLengths;
+  }
+
+  Map<String, dynamic> getSwimDatesFitBitLog(Map<String, dynamic> distancesMap) {
+    Map<String, dynamic> dateLengthMap = {};
+
+    var list = distancesMap["activities"];
+
+    for (dynamic map in list) {
+      String activity = map["activityName"];
+      if (activity != "Swim") {
+        continue;
+      }
+      String startTime = map["startTime"];
+      String dateString = startTime.substring(0, startTime.indexOf("T"));
+      int length = map["swimLengths"];
+
+      if (dateLengthMap.containsKey(dateString)) {
+        int oldValue = int.parse(dateLengthMap[dateString]);
+        dateLengthMap[dateString] = ( oldValue + length ).toString();
+      } else {
+        dateLengthMap[dateString] = length.toString();
+      }
+
+    }
+
+    return dateLengthMap;
+  }
+
+  void saveDistancesInFirestore(Map<String, dynamic> distancesMap) {
+    getFireService().setSwimDates(distancesMap);
   }
 }
 

@@ -13,6 +13,7 @@ class FitbitService {
   final String DISTANCE_RESOURCE_PATH = "/activities/distance";
 
   final String START_DATE = "2020-09-01"; //TODO: change this
+  final String LOG_STRING = "?afterDate=2020-09-01&sort=asc&limit=20&offset=0"; //TODO: change this?
 
   Map<String, FitBitPackage> fakeData = {
     "QXVXD4JNJAYofXxcCqSkst78Inr1" : FitBitPackage(distanceKm: 6), //Carl
@@ -28,7 +29,9 @@ class FitbitService {
 
 
   Future<Response> getAllDistances(String fitBitUserId) {
-   return fitBitHelper.get(FITBIT_BASE_URL + fitBitUserId + DISTANCE_RESOURCE_PATH + "/date/" + START_DATE + "/today.json");
+   //return fitBitHelper.get(FITBIT_BASE_URL + fitBitUserId + DISTANCE_RESOURCE_PATH + "/date/" + START_DATE + "/today.json");
+    //https://api.fitbit.com/1/user/8SXT9N/activities/list.json?afterDate=2020-09-01&sort=asc&limit=20&offset=0
+   return fitBitHelper.get(FITBIT_BASE_URL + fitBitUserId + "/activities/list.json" + LOG_STRING);
 
   }
 

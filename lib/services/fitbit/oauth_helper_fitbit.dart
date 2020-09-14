@@ -18,7 +18,7 @@ class OauthFitbitHelper extends OAuth2Helper {
     //_validateAuthorizationParams();
 
     var tknResp = await getTokenFromStorage();
-    //var tknResp = null; do this to reset token...
+    //var tknResp = null; //do this to reset token...
     if (tknResp != null) {
       if (tknResp.refreshNeeded()) {
         //The access token is expired
