@@ -31,6 +31,8 @@ class Leaderboard extends StatefulWidget {
 
 class _LeaderboardState extends State<Leaderboard> {
 
+  static final String SNAIL_IMG_URL = "https://tattsblog.files.wordpress.com/2016/02/snail.jpg";
+
   List<IsFriend> userList = [];
   List<UserWithData> userDataList = [];
   int longestDistance = 0;
@@ -43,6 +45,9 @@ class _LeaderboardState extends State<Leaderboard> {
 
   bool init = true;
   LoggedUser loggedUser;
+
+  int lowestDistance = 9999999999;
+  String lowestUser;
 
   @override
   void initState() {
@@ -105,11 +110,16 @@ class _LeaderboardState extends State<Leaderboard> {
 
       if (user.uid == loggedUser.uid) {
 
-        fitServ.getAllDistances(user.fitbitId).then((value) {
-          Map<String, dynamic> distancesJson = jsonDecode(value.body);
-          Map<String, dynamic> distancesMap = getSwimDatesFitBitLog(distancesJson);
+        var future1 = fitServ.getAllDistances1(user.fitbitId);
+        var future2 = fitServ.getAllDistances2(user.fitbitId);
 
-          saveDistancesInFirestore(distancesMap);
+        Future.wait([future1, future2]).then((value) {
+          Map<String, dynamic> distancesJson1 = jsonDecode(value[0].body);
+          Map<String, dynamic> distancesJson2 = jsonDecode(value[1].body);
+
+          Map<String, dynamic> distancesMap = getSwimDatesFitBitLog(distancesJson1, distancesJson2);
+
+          distancesMap = saveDistancesInFirestore(distancesMap);
 
           user.distanceKm = countSwimDates(distancesMap);
           saveLongestDistance(user.distanceKm);
@@ -171,6 +181,17 @@ class _LeaderboardState extends State<Leaderboard> {
 
       return b.distanceKm.compareTo(a.distanceKm);
     });
+
+    for (UserWithData user in users) {
+      if (user.distanceKm == null) {
+        lowestUser = null;
+        break;
+      }
+      if (lowestDistance > user.distanceKm) {
+        lowestDistance = user.distanceKm;
+        lowestUser = user.uid;
+      }
+    }
     return users;
   }
 
@@ -186,9 +207,6 @@ class _LeaderboardState extends State<Leaderboard> {
   }
 
   Widget getListview() {
-
-
-
 
     return ListView.builder(
       itemCount: userDataList.length,
@@ -208,7 +226,7 @@ class _LeaderboardState extends State<Leaderboard> {
                   child: CachedNetworkImage(
                     width: 50,
                     height: 50,
-                    imageUrl: user.photoUrl + "?height=500",
+                    imageUrl: isLastPlace(user.uid) ? SNAIL_IMG_URL : user.photoUrl + "?height=500",
                     placeholder: (context, url) => CircularProgressIndicator(),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                     fit: BoxFit.fill,
@@ -262,34 +280,57 @@ class _LeaderboardState extends State<Leaderboard> {
     return totalLengths;
   }
 
-  Map<String, dynamic> getSwimDatesFitBitLog(Map<String, dynamic> distancesMap) {
+  Map<String, dynamic> getSwimDatesFitBitLog(Map<String, dynamic> distancesMap, Map<String, dynamic> distancesMap2) {
     Map<String, dynamic> dateLengthMap = {};
 
     var list = distancesMap["activities"];
+    var list2 = distancesMap2["activities"];
 
+    dateLengthMap = extractDistanceFromFitMap(list, dateLengthMap);
+    //map will overwrite potential duplicates
+    dateLengthMap = extractDistanceFromFitMap(list2, dateLengthMap);
+
+    return dateLengthMap;
+  }
+
+  Map<String, dynamic> extractDistanceFromFitMap(List<dynamic> list, Map<String, dynamic> dateMap) {
     for (dynamic map in list) {
       String activity = map["activityName"];
       if (activity != "Swim") {
         continue;
       }
       String startTime = map["startTime"];
-      String dateString = startTime.substring(0, startTime.indexOf("T"));
       int length = map["swimLengths"];
 
-      if (dateLengthMap.containsKey(dateString)) {
-        int oldValue = int.parse(dateLengthMap[dateString]);
-        dateLengthMap[dateString] = ( oldValue + length ).toString();
-      } else {
-        dateLengthMap[dateString] = length.toString();
-      }
-
+      dateMap[startTime] = length.toString();
     }
-
-    return dateLengthMap;
+    return dateMap;
   }
 
-  void saveDistancesInFirestore(Map<String, dynamic> distancesMap) {
+  Map<String, dynamic> saveDistancesInFirestore(Map<String, dynamic> distancesMap) {
+    Map<String, dynamic> newMap = {};
+
+    distancesMap.forEach((key, value) {
+      String newKey = key.substring(0, key.indexOf("T"));
+      if (distancesMap.containsKey(newKey)) {
+        int oldValue = int.parse(distancesMap[newKey]);
+        String newValue = ( oldValue + int.parse(value)).toString();
+        newMap[newKey] =  newValue;
+      } else {
+        newMap[newKey] = value;
+      }
+    }
+    );
+
     getFireService().setSwimDates(distancesMap);
+    return newMap;
+  }
+
+  bool isLastPlace(String uid) {
+    if (lowestUser == null || lowestUser != uid) {
+      return false;
+    }
+    return true;
   }
 }
 
