@@ -62,11 +62,11 @@ class _MainDrawerState extends State<MainDrawer> {
               title: Text("Home", style: TextStyle(fontSize: 18)),
               onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Home()));}
           ),
-          ListTile(
+          /*ListTile(
               leading: Icon(Icons.event),
               title: Text("Manual log", style: TextStyle(fontSize: 18)),
               onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Log()));}
-          ),
+          ),*/
           ListTile(
             leading: Icon(Icons.person),
             title: Text("Profile", style: TextStyle(fontSize: 18)),

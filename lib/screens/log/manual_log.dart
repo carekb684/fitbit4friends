@@ -117,7 +117,7 @@ class _LogState extends State<Log> {
 
                     _formKey.currentState.save();
                     swimInputController.clear();
-                    fireServ.setSwimDate(format(dateTime), inputSwim);
+                    //fireServ.setSwimDate(format(dateTime), inputSwim);
                     setState(() {
                       swims = fireServ.getSwimDates(loggedUser.uid);
                     });

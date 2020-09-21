@@ -113,7 +113,7 @@ class _MyProfileState extends State<MyProfile> {
                                 children: <Widget>[
                                   Column(
                                     children: <Widget>[
-                                      Text("Who do you think will lose?"),
+                                      Text("Where do you want your snail?"),
                                       SizedBox(
                                         width: 250,
                                         child: TextFormField(

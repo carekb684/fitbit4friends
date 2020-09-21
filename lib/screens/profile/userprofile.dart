@@ -71,7 +71,7 @@ class _UserProfileState extends State<UserProfile> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text("Who do you think will lose?", style: TextStyle(fontSize: 20, color: Colors.grey[600])), SizedBox(height: 8,),
+                      Text("Where do you want your snail?", style: TextStyle(fontSize: 20, color: Colors.grey[600])), SizedBox(height: 8,),
                       profileModel == null || profileModel.loseText == null ? CircularProgressIndicator() : Text(profileModel.loseText),
                     ],
                   ),
