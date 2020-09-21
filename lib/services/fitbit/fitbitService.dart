@@ -14,7 +14,8 @@ class FitbitService {
 
   final String START_DATE = "2020-09-01"; //TODO: change this
   final String LOG_STRING_1 = "?afterDate=2020-09-01&sort=asc&limit=20&offset=0"; //TODO: change this?
-  final String LOG_STRING_2 = "?afterDate=2020-09-16&sort=asc&limit=20&offset=0"; //TODO: change this?
+  final String LOG_STRING_2 = "?afterDate=2020-09-10&sort=asc&limit=20&offset=0"; //TODO: change this?
+  final String LOG_STRING_3 = "?afterDate=2020-09-20&sort=asc&limit=20&offset=0"; //TODO: change this?
 
   Map<String, FitBitPackage> fakeData = {
     "QXVXD4JNJAYofXxcCqSkst78Inr1" : FitBitPackage(distanceKm: 6), //Carl
@@ -35,6 +36,10 @@ class FitbitService {
 
   Future<Response> getAllDistances2(String fitBitUserId) {
    return fitBitHelper.get(FITBIT_BASE_URL + fitBitUserId + "/activities/list.json" + LOG_STRING_2);
+  }
+
+  Future<Response> getAllDistances3(String fitBitUserId) {
+   return fitBitHelper.get(FITBIT_BASE_URL + fitBitUserId + "/activities/list.json" + LOG_STRING_3);
   }
 
 

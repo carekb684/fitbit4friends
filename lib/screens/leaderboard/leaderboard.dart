@@ -112,12 +112,14 @@ class _LeaderboardState extends State<Leaderboard> {
 
         var future1 = fitServ.getAllDistances1(user.fitbitId);
         var future2 = fitServ.getAllDistances2(user.fitbitId);
+        var future3 = fitServ.getAllDistances3(user.fitbitId);
 
-        Future.wait([future1, future2]).then((value) {
+        Future.wait([future1, future2, future3]).then((value) {
           Map<String, dynamic> distancesJson1 = jsonDecode(value[0].body);
           Map<String, dynamic> distancesJson2 = jsonDecode(value[1].body);
+          Map<String, dynamic> distancesJson3 = jsonDecode(value[2].body);
 
-          Map<String, dynamic> distancesMap = getSwimDatesFitBitLog(distancesJson1, distancesJson2);
+          Map<String, dynamic> distancesMap = getSwimDatesFitBitLog(distancesJson1, distancesJson2, distancesJson3);
 
           distancesMap = saveDistancesInFirestore(distancesMap);
 
@@ -280,15 +282,17 @@ class _LeaderboardState extends State<Leaderboard> {
     return totalLengths;
   }
 
-  Map<String, dynamic> getSwimDatesFitBitLog(Map<String, dynamic> distancesMap, Map<String, dynamic> distancesMap2) {
+  Map<String, dynamic> getSwimDatesFitBitLog(Map<String, dynamic> distancesMap, Map<String, dynamic> distancesMap2, Map<String, dynamic> distancesMap3) {
     Map<String, dynamic> dateLengthMap = {};
 
     var list = distancesMap["activities"];
     var list2 = distancesMap2["activities"];
+    var list3 = distancesMap3["activities"];
 
     dateLengthMap = extractDistanceFromFitMap(list, dateLengthMap);
     //map will overwrite potential duplicates
     dateLengthMap = extractDistanceFromFitMap(list2, dateLengthMap);
+    dateLengthMap = extractDistanceFromFitMap(list3, dateLengthMap);
 
     return dateLengthMap;
   }
