@@ -45,7 +45,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       height: 100,
                       child: ClipOval(
                         child: CachedNetworkImage(
-                          imageUrl: user.photoUrl + "?height=500",
+                          imageUrl: user.photoUrl,
                           placeholder: (context, url) => CircularProgressIndicator(),
                           errorWidget: (context, url, error) => Icon(Icons.error),
                           fit: BoxFit.fill,

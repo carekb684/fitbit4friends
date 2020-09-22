@@ -23,7 +23,7 @@ class ProfileHeader extends StatelessWidget {
                     height: 150,
                     child: ClipOval(
                       child: CachedNetworkImage(
-                        imageUrl: photoUrl + "?height=500",
+                        imageUrl: photoUrl,
                         placeholder: (context, url) => CircularProgressIndicator(),
                         errorWidget: (context, url, error) => Icon(Icons.error),
                         fit: BoxFit.fill,

@@ -228,7 +228,7 @@ class _LeaderboardState extends State<Leaderboard> {
                   child: CachedNetworkImage(
                     width: 50,
                     height: 50,
-                    imageUrl: isLastPlace(user.uid) ? SNAIL_IMG_URL : user.photoUrl + "?height=500",
+                    imageUrl: isLastPlace(user.uid) ? SNAIL_IMG_URL : user.photoUrl,
                     placeholder: (context, url) => CircularProgressIndicator(),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                     fit: BoxFit.fill,

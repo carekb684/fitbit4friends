@@ -101,7 +101,7 @@ class _FriendListState extends State<FriendList> {
                 child: CachedNetworkImage(
                   width: 50,
                   height: 50,
-                  imageUrl: friend.user.photoUrl + "?height=500",
+                  imageUrl: friend.user.photoUrl,
                   placeholder: (context, url) => CircularProgressIndicator(),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                   fit: BoxFit.fill,
