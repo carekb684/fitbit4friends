@@ -267,8 +267,11 @@ class _LeaderboardState extends State<Leaderboard> {
     if (data.isEmpty) {
       return totalLengths;
     }
+
+    int month = DateTime.now().month;
+    String monthStr = month == 9 ? "09" : "10";
     // TODO: change to 10 OCTOBER
-    String base_key = "2020-09-";
+    String base_key = "2020-" +monthStr+ "-";
 
     for (int i in List.generate(31, (index) => index + 1)) {
 
