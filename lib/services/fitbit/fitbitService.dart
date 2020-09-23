@@ -5,17 +5,21 @@ import 'package:http/http.dart';
 
 class FitbitService {
 
-  FitbitService({this.fitBitHelper});
+  FitbitService({this.fitBitHelper}){
+    int month = DateTime.now().month;
+    String monthStr = month == 9 ? "09" : "10";
+    LOG_STRING_1 = "?afterDate=2020-" +monthStr+ "-01&sort=asc&limit=20&offset=0";
+    LOG_STRING_2 = "?afterDate=2020-" +monthStr+ "-10&sort=asc&limit=20&offset=0";
+    LOG_STRING_3 = "?afterDate=2020-" +monthStr+ "-20&sort=asc&limit=20&offset=0";
+  }
 
   OauthFitbitHelper fitBitHelper;
 
   final String FITBIT_BASE_URL = "https://api.fitbit.com/1/user/";
-  final String DISTANCE_RESOURCE_PATH = "/activities/distance";
 
-  final String START_DATE = "2020-09-01"; //TODO: change this
-  final String LOG_STRING_1 = "?afterDate=2020-09-01&sort=asc&limit=20&offset=0"; //TODO: change this?
-  final String LOG_STRING_2 = "?afterDate=2020-09-10&sort=asc&limit=20&offset=0"; //TODO: change this?
-  final String LOG_STRING_3 = "?afterDate=2020-09-20&sort=asc&limit=20&offset=0"; //TODO: change this?
+  String LOG_STRING_1;
+  String LOG_STRING_2;
+  String LOG_STRING_3;
 
   Map<String, FitBitPackage> fakeData = {
     "QXVXD4JNJAYofXxcCqSkst78Inr1" : FitBitPackage(distanceKm: 6), //Carl
