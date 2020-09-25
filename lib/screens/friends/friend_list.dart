@@ -27,13 +27,23 @@ class _FriendListState extends State<FriendList> {
   final addSuccessBar = SnackBar(content: Text('Added a new friend!'));
   final removeSuccessBar = SnackBar(content: Text('Removed friend!'));
   final removeFailBar = SnackBar(content: Text('Failed to remove friend!'));
+  Stream<List<IsFriend>> _friendStream;
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    IsFriendViewModel viewModel = Provider.of<IsFriendViewModel>(context);
+    _friendStream = viewModel.isFriendStream();
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    IsFriendViewModel viewModel = Provider.of<IsFriendViewModel>(context);
+
 
     return StreamBuilder<List<IsFriend>>(
-      stream: viewModel.isFriendStream(),
+      stream: _friendStream ,
       builder: (_, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           List<IsFriend> friends = snapshot.data;

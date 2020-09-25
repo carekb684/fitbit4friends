@@ -44,7 +44,7 @@ class FirestoreService {
   List<IsFriendId> _friendListFromSnapshot(DocumentSnapshot snap) {
     var data = snap.data();
     List<IsFriendId> isFriends = [];
-    List<dynamic> uids = data == null ? [] : data["uids"];
+    List<dynamic> uids = data == null || data.isEmpty ? [] : data["uids"];
     for (dynamic uid in uids) {
       isFriends.add(IsFriendId(uid: uid, isFriend: true));
     }
@@ -53,7 +53,8 @@ class FirestoreService {
 
   void addFriend(String uid) {
       var ref = firestore.collection("users").doc(loggedUid).collection("userfriends").doc(loggedUid);
-      ref.set({"uids": [uid]}, SetOptions(merge:true));
+      ref.set({}, SetOptions(merge:true));
+      firestore.collection("users").doc(loggedUid).collection("userfriends").doc(loggedUid).update({"uids" : FieldValue.arrayUnion([uid])});
   }
 
   void removeFriend(String uid) async {
