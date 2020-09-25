@@ -329,7 +329,7 @@ class _LeaderboardState extends State<Leaderboard> {
     }
     );
 
-    getFireService().setSwimDates(distancesMap);
+    getFireService().setSwimDates(newMap);
     return newMap;
   }
 
