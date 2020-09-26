@@ -309,7 +309,9 @@ class _LeaderboardState extends State<Leaderboard> {
       String startTime = map["startTime"];
       int length = map["swimLengths"];
 
-      dateMap[startTime] = length.toString();
+      if (length != null) {
+        dateMap[startTime] = length.toString();
+      }
     }
     return dateMap;
   }
