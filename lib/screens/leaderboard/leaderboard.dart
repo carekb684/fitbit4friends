@@ -322,7 +322,7 @@ class _LeaderboardState extends State<Leaderboard> {
     distancesMap.forEach((key, value) {
       String newKey = key.substring(0, key.indexOf("T"));
       if (newMap.containsKey(newKey)) {
-        int oldValue = int.parse(distancesMap[newKey]);
+        int oldValue = int.parse(newMap[newKey]);
         String newValue = ( oldValue + int.parse(value)).toString();
         newMap[newKey] =  newValue;
       } else {
