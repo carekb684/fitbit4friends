@@ -96,7 +96,15 @@ class OAuthFitbit extends OAuth2Client {
     await httpClient.post(tokenUrl, headers: <String, String>{HttpHeaders.authorizationHeader: "Basic " + encoded, HttpHeaders.contentTypeHeader : "application/x-www-form-urlencoded"} ,
         body: body);
 
-    return AccessTokenResponse.fromHttpResponse(response);
+    var accessTokenResponse = AccessTokenResponse.fromHttpResponse(response);
+
+    if(accessTokenResponse.httpStatusCode == 400) {
+      var map = jsonDecode(response.body);
+      List<dynamic> singletonList = map["errors"];
+      accessTokenResponse.error = singletonList.first["errorType"];
+    }
+
+    return accessTokenResponse;
   }
 
   @override

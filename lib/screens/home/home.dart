@@ -1,5 +1,7 @@
 import 'package:fitbit_for_friends/screens/mainDrawer.dart';
+import 'package:fitbit_for_friends/services/firebase/authService.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
 
@@ -31,7 +33,25 @@ class Home extends StatelessWidget {
             ],
           ),
           SizedBox(height: 40),
-          Center(child: Text('"Alla kämpar faller segerlösa..."'))
+          Center(child: Text('"Alla kämpar faller segerlösa..."')),
+          SizedBox(height: 40),
+          SizedBox(
+            width: 220,
+            height: 50,
+            child: RaisedButton(
+              textColor: Colors.white,
+              color: Colors.blue,
+              child: Text("Sign out"),
+              onPressed: () {
+
+                AuthService auth = Provider.of<AuthService>(context, listen:false);
+                auth.signOut();
+              },
+              shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0),
+              ),
+            ),
+          ),
         ],
       ),
       appBar: AppBar(
@@ -43,4 +63,5 @@ class Home extends StatelessWidget {
 
 
   }
+
 }
