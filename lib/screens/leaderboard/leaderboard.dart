@@ -311,6 +311,12 @@ class _LeaderboardState extends State<Leaderboard> {
 
       if (length != null) {
         dateMap[startTime] = length.toString();
+      } else {
+        int distance = dateMap["distance"];
+        if (distance != null) {
+          int laps = (distance/25).floor();
+          dateMap[startTime] = laps.toString();
+        }
       }
     }
     return dateMap;
