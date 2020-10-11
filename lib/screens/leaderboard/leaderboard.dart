@@ -312,9 +312,9 @@ class _LeaderboardState extends State<Leaderboard> {
       if (length != null) {
         dateMap[startTime] = length.toString();
       } else {
-        int distance = dateMap["distance"];
-        if (distance != null) {
-          int laps = (distance/25).floor();
+        double distanceKm = map["distance"];
+        if (distanceKm != null) {
+          int laps = ((distanceKm * 1000 )/25).floor();
           dateMap[startTime] = laps.toString();
         }
       }
